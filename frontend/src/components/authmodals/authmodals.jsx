@@ -1,27 +1,50 @@
 // src/components/Layout.jsx
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useMediaQuery } from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout, login, register } from '../../redux/slices/authSlice';
+import React from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useMediaQuery } from "@mui/material";
+import { useSelector, useDispatch } from "react-redux";
+import { logout, login, register } from "../../redux/slices/authSlice";
 import {
-  Home, User, Bell, LogIn, UserPlus, LogOut, X, Search, Menu, MapPin, AtSign
-} from 'lucide-react';
-import { Lock } from 'lucide-react'
+  Home,
+  User,
+  Bell,
+  LogIn,
+  UserPlus,
+  LogOut,
+  X,
+  Search,
+  Menu,
+  MapPin,
+  AtSign,
+} from "lucide-react";
+import { Lock } from "lucide-react";
 import {
-  Dialog, Button, TextField, Divider, IconButton, Avatar, Badge,
-  Tabs, Tab, Chip, useTheme
-} from '@mui/material';
+  Dialog,
+  Button,
+  TextField,
+  Divider,
+  IconButton,
+  Avatar,
+  Badge,
+  Tabs,
+  Tab,
+  Chip,
+  useTheme,
+} from "@mui/material";
 
 const AuthModals = ({ openType, onClose }) => {
   const dispatch = useDispatch();
-  const { status, error } = useSelector(state => state.auth);
+  const { status, error } = useSelector((state) => state.auth);
   const [view, setView] = useState(openType);
-  const [formData, setFormData] = useState({ email: '', password: '', name: '' });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    name: "",
+  });
 
   const handleSubmit = () => {
-    if (view === 'login') {
+    if (view === "login") {
       dispatch(login({ email: formData.email, password: formData.password }));
     } else {
       dispatch(register(formData));
@@ -40,10 +63,12 @@ const AuthModals = ({ openType, onClose }) => {
             <MapPin className="text-white w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            {view === 'login' ? 'Welcome Back!' : 'Join ErrandHub'}
+            {view === "login" ? "Welcome Back!" : "Join Taskoba"}
           </h2>
           <p className="text-gray-600">
-            {view === 'login' ? 'Sign in to continue' : 'Create your free account'}
+            {view === "login"
+              ? "Sign in to continue"
+              : "Create your free account"}
           </p>
         </div>
 
@@ -58,12 +83,14 @@ const AuthModals = ({ openType, onClose }) => {
         )}
 
         <div className="space-y-4">
-          {view === 'register' && (
+          {view === "register" && (
             <TextField
               fullWidth
               label="Full Name"
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               InputProps={{
                 startAdornment: <User className="text-gray-400 mr-2" />,
               }}
@@ -74,7 +101,9 @@ const AuthModals = ({ openType, onClose }) => {
             label="Email"
             type="email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
             InputProps={{
               startAdornment: <AtSign className="text-gray-400 mr-2" />,
             }}
@@ -84,7 +113,9 @@ const AuthModals = ({ openType, onClose }) => {
             label="Password"
             type="password"
             value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
             InputProps={{
               startAdornment: <Lock className="text-gray-400 mr-2" />,
             }}
@@ -96,15 +127,15 @@ const AuthModals = ({ openType, onClose }) => {
           variant="contained"
           size="large"
           onClick={handleSubmit}
-          disabled={status === 'loading'}
+          disabled={status === "loading"}
           className="!rounded-xl !py-3 !text-base !font-semibold !shadow-lg"
         >
-          {status === 'loading' ? (
+          {status === "loading" ? (
             <span className="animate-pulse">Processing...</span>
-          ) : view === 'login' ? (
-            'Sign In'
+          ) : view === "login" ? (
+            "Sign In"
           ) : (
-            'Create Account'
+            "Create Account"
           )}
         </Button>
 
@@ -113,35 +144,58 @@ const AuthModals = ({ openType, onClose }) => {
         <Button
           fullWidth
           variant="outlined"
-          onClick={() => setView(view === 'login' ? 'register' : 'login')}
+          onClick={() => setView(view === "login" ? "register" : "login")}
           className="!rounded-xl !py-2.5 !text-gray-700"
         >
-          {view === 'login' ? 'Create New Account' : 'Already have an account? Sign In'}
+          {view === "login"
+            ? "Create New Account"
+            : "Already have an account? Sign In"}
         </Button>
       </motion.div>
     </Dialog>
   );
 };
 
-
 const Layout = ({ children }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector(state => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const [authModal, setAuthModal] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Responsive Navigation Items
   const navItems = [
-    { icon: <Home />, label: 'Home', onClick: () => window.scrollTo(0, 0) },
-    ...(isAuthenticated ? [
-      { icon: <User />, label: 'Profile', onClick: () => {/* Navigate */} },
-      { icon: <Bell />, label: 'Notifications', onClick: () => {/* Navigate */} }
-    ] : [
-      { icon: <LogIn />, label: 'Login', onClick: () => setAuthModal('login') },
-      { icon: <UserPlus />, label: 'Register', onClick: () => setAuthModal('register') }
-    ])
+    { icon: <Home />, label: "Home", onClick: () => window.scrollTo(0, 0) },
+    ...(isAuthenticated
+      ? [
+          {
+            icon: <User />,
+            label: "Profile",
+            onClick: () => {
+              /* Navigate */
+            },
+          },
+          {
+            icon: <Bell />,
+            label: "Notifications",
+            onClick: () => {
+              /* Navigate */
+            },
+          },
+        ]
+      : [
+          {
+            icon: <LogIn />,
+            label: "Login",
+            onClick: () => setAuthModal("login"),
+          },
+          {
+            icon: <UserPlus />,
+            label: "Register",
+            onClick: () => setAuthModal("register"),
+          },
+        ]),
   ];
 
   return (
@@ -157,7 +211,7 @@ const Layout = ({ children }) => {
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-2 rounded-lg">
                 <MapPin className="text-white" />
               </div>
-              <span className="font-bold text-gray-800">ErrandHub</span>
+              <span className="font-bold text-gray-800">Taskoba</span>
             </div>
             <IconButton>
               <Badge badgeContent={3} color="error">
@@ -173,7 +227,11 @@ const Layout = ({ children }) => {
         <nav className="fixed bottom-0 w-full bg-white shadow-lg z-50">
           <div className="flex justify-around p-2">
             {navItems.map((item, i) => (
-              <IconButton key={i} onClick={item.onClick} className="!rounded-xl">
+              <IconButton
+                key={i}
+                onClick={item.onClick}
+                className="!rounded-xl"
+              >
                 <div className="text-gray-600">{item.icon}</div>
               </IconButton>
             ))}
@@ -212,10 +270,10 @@ const Layout = ({ children }) => {
       <AnimatePresence>
         {mobileMenuOpen && isMobile && (
           <motion.div
-            initial={{ x: '-100%' }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-50 p-4"
           >
             <div className="flex justify-end mb-6">
@@ -254,7 +312,9 @@ const Layout = ({ children }) => {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className={`${isMobile ? 'pt-16 pb-20' : 'ml-20'} p-4 md:p-8`}>
+      <main
+        className={`${isMobile ? "pt-16 pb-20" : "ml-20"} p-4 md:p-8 pt-24`}
+      >
         {/* Search Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -267,7 +327,7 @@ const Layout = ({ children }) => {
             placeholder="Find errands near you..."
             InputProps={{
               startAdornment: <Search className="text-gray-400 mr-2" />,
-              className: '!rounded-2xl !bg-white',
+              className: "!rounded-2xl !bg-white",
               endAdornment: (
                 <Button
                   variant="contained"
@@ -275,7 +335,7 @@ const Layout = ({ children }) => {
                 >
                   Search
                 </Button>
-              )
+              ),
             }}
           />
         </motion.div>

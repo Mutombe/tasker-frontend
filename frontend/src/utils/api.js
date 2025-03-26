@@ -5,7 +5,7 @@ import { logout } from "../redux/slices/authSlice";
 
 // Configure base axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL_DEV,
   withCredentials: true,
   xsrfCookieName: "csrftoken",
   xsrfHeaderName: "X-CSRFToken",
@@ -34,7 +34,7 @@ api.interceptors.response.use(
         if (!refresh) throw new Error("No refresh token");
         
         // Refresh tokens
-        const { data } = await axios.post("/api/auth/refresh/", { refresh });
+        const { data } = await axios.post("/auth/refresh/", { refresh });
         localStorage.setItem("auth", JSON.stringify(data));
         
         // Retry original request
