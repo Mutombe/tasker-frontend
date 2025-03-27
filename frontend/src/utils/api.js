@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance without store dependency
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/", 
+  baseURL: "https://taskoba-backend.onrender.com", 
   withCredentials: true,
   xsrfCookieName: "csrftoken",
   xsrfHeaderName: "X-CSRFToken",
@@ -11,7 +11,7 @@ const api = axios.create({
 // Separate token refresh logic
 export const refreshTokens = async (refresh) => {
   try {
-    const { data } = await axios.post("http://127.0.0.1:8000/core/auth/refresh/", { refresh });
+    const { data } = await axios.post("https://taskoba-backend.onrender.com/core/auth/refresh/", { refresh });
     return data;
   } catch (error) {
     throw error;

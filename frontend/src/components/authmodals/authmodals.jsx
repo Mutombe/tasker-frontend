@@ -17,7 +17,7 @@ import {
   Menu,
   MapPin,
   AtSign,
-  LayoutDashboard
+  LayoutDashboard,
 } from "lucide-react";
 import { Lock } from "lucide-react";
 import {
@@ -44,7 +44,7 @@ const AuthModals = ({ openType, onClose }) => {
     password: "",
     username: "",
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   // Update view when openType changes
   useEffect(() => {
@@ -90,7 +90,7 @@ const AuthModals = ({ openType, onClose }) => {
     if (!error) return null;
 
     // Check for specific error messages
-    if (typeof error === 'object') {
+    if (typeof error === "object") {
       if (error.username) return error.username[0];
       if (error.email) return error.email[0];
       if (error.detail) return error.detail;
@@ -99,7 +99,6 @@ const AuthModals = ({ openType, onClose }) => {
     // Fallback to generic error message
     return error.toString();
   };
-
 
   return (
     <Dialog open={!!openType} onClose={onClose} maxWidth="xs" fullWidth>
@@ -128,11 +127,11 @@ const AuthModals = ({ openType, onClose }) => {
             animate={{ opacity: 1 }}
             className="bg-red-50 p-3 rounded-lg text-red-700 text-sm"
           >
-            {view === 'register' ? getRegistrationError() : (
-              typeof error === "object"
-                ? error.detail || JSON.stringify(error)
-                : error
-            )}
+            {view === "register"
+              ? getRegistrationError()
+              : typeof error === "object"
+              ? error.detail || JSON.stringify(error)
+              : error}
           </motion.div>
         )}
 
@@ -225,11 +224,11 @@ const Layout = ({ children }) => {
     { icon: <Home />, label: "Home", onClick: () => navigate("/") },
     ...(isAuthenticated
       ? [
-        {
-          icon: <LayoutDashboard />,
-          label: "Dashboard",
-          onClick: () => navigate("/dashboard")
-        },
+          {
+            icon: <LayoutDashboard />,
+            label: "Dashboard",
+            onClick: () => navigate("/dashboard"),
+          },
           {
             icon: <User />,
             label: "Profile",
