@@ -6,7 +6,7 @@ export const fetchApplications = createAsyncThunk(
   "profile/fetchApplications",
   async (taskId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`applications/?task=${taskId}`);
+      const response = await api.get(`core/applications/?task=${taskId}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(
@@ -20,7 +20,7 @@ export const createApplication = createAsyncThunk(
   "applications/createApplication",
   async (taskId, { rejectWithValue }) => {
     try {
-      const response = await api.post("/applications/", { task: taskId });
+      const response = await api.post("/core/applications/", { task: taskId });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -32,7 +32,7 @@ export const updateApplicationStatus = createAsyncThunk(
   "applications/updateStatus",
   async ({ applicationId, status }, { rejectWithValue }) => {
     try {
-      const response = await api.patch(`/applications/${applicationId}/`, {
+      const response = await api.patch(`/core/applications/${applicationId}/`, {
         status,
       });
       return response.data;

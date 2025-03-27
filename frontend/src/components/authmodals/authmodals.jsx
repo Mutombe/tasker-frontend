@@ -17,6 +17,7 @@ import {
   Menu,
   MapPin,
   AtSign,
+  LayoutDashboard
 } from "lucide-react";
 import { Lock } from "lucide-react";
 import {
@@ -32,6 +33,7 @@ import {
   Chip,
   useTheme,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const AuthModals = ({ openType, onClose }) => {
   const dispatch = useDispatch();
@@ -40,16 +42,64 @@ const AuthModals = ({ openType, onClose }) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    name: "",
+    username: "",
   });
+  const navigate = useNavigate()
+
+  // Update view when openType changes
+  useEffect(() => {
+    setView(openType);
+  }, [openType]);
+
+  useEffect(() => {
+    if (openType) {
+      setFormData({
+        email: "",
+        password: "",
+        username: "",
+      });
+    }
+  }, [openType]);
 
   const handleSubmit = () => {
     if (view === "login") {
-      dispatch(login({ email: formData.email, password: formData.password }));
+      dispatch(
+        login({ username: formData.username, password: formData.password })
+      )
+        .unwrap()
+        .then(() => {
+          onClose();
+        })
+        .catch((err) => {
+          console.error("Login Failed:", err);
+        });
     } else {
-      dispatch(register(formData));
+      dispatch(register(formData))
+        .unwrap()
+        .then(() => {
+          onClose();
+          navigate("/email-verify");
+        })
+        .catch((err) => {
+          console.error("Registration Failed:", err);
+        });
     }
   };
+
+  const getRegistrationError = () => {
+    if (!error) return null;
+
+    // Check for specific error messages
+    if (typeof error === 'object') {
+      if (error.username) return error.username[0];
+      if (error.email) return error.email[0];
+      if (error.detail) return error.detail;
+    }
+
+    // Fallback to generic error message
+    return error.toString();
+  };
+
 
   return (
     <Dialog open={!!openType} onClose={onClose} maxWidth="xs" fullWidth>
@@ -78,7 +128,11 @@ const AuthModals = ({ openType, onClose }) => {
             animate={{ opacity: 1 }}
             className="bg-red-50 p-3 rounded-lg text-red-700 text-sm"
           >
-            {error}
+            {view === 'register' ? getRegistrationError() : (
+              typeof error === "object"
+                ? error.detail || JSON.stringify(error)
+                : error
+            )}
           </motion.div>
         )}
 
@@ -86,26 +140,27 @@ const AuthModals = ({ openType, onClose }) => {
           {view === "register" && (
             <TextField
               fullWidth
-              label="Full Name"
-              value={formData.name}
+              label="Email"
+              type="email"
+              value={formData.email}
               onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
+                setFormData({ ...formData, email: e.target.value })
               }
               InputProps={{
-                startAdornment: <User className="text-gray-400 mr-2" />,
+                startAdornment: <AtSign className="text-gray-400 mr-2" />,
               }}
             />
           )}
+
           <TextField
             fullWidth
-            label="Email"
-            type="email"
-            value={formData.email}
+            label="Username"
+            value={formData.username}
             onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
+              setFormData({ ...formData, username: e.target.value })
             }
             InputProps={{
-              startAdornment: <AtSign className="text-gray-400 mr-2" />,
+              startAdornment: <User className="text-gray-400 mr-2" />,
             }}
           />
           <TextField
@@ -163,12 +218,18 @@ const Layout = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [authModal, setAuthModal] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Responsive Navigation Items
   const navItems = [
-    { icon: <Home />, label: "Home", onClick: () => window.scrollTo(0, 0) },
+    { icon: <Home />, label: "Home", onClick: () => navigate("/") },
     ...(isAuthenticated
       ? [
+        {
+          icon: <LayoutDashboard />,
+          label: "Dashboard",
+          onClick: () => navigate("/dashboard")
+        },
           {
             icon: <User />,
             label: "Profile",

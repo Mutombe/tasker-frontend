@@ -6,7 +6,7 @@ export const fetchTasks = createAsyncThunk(
   "tasks/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await api.get("/tasks/");
+      const { data } = await api.get("/core/tasks/");
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
@@ -18,7 +18,7 @@ export const createTask = createAsyncThunk(
   "tasks/create",
   async (taskData, { rejectWithValue }) => {
     try {
-      const { data } = await api.post("/tasks/", taskData);
+      const { data } = await api.post("/core/tasks/", taskData);
       return data;
     } catch (err) {
       return rejectWithValue(err.response.data);
