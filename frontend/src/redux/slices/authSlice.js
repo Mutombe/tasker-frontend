@@ -82,13 +82,15 @@ const authSlice = createSlice({
     .addCase(register.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.error = null;
-      // Additional registration success handling if needed
+      state.user = action.payload.user;
+      console.log("User", state.user)
+      state.isAuthenticated = true;
+      localStorage.setItem("auth", JSON.stringify(action.payload));
     })
     .addCase(register.rejected, (state, action) => {
       state.status = "failed";
-      // This ensures all error formats are captured
-      state.error = action.payload || { detail: 'Registration failed' };
       state.isAuthenticated = false;
+      state.error = action.payload || { detail: 'Registration failed' };
     })
       .addCase(login.pending, (state) => {
         state.status = "loading";
